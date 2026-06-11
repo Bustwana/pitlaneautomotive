@@ -1,0 +1,756 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Pitlane Automotive Group API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: subscribers
+    description: Subscriber management
+  - name: mechanics
+    description: Mechanic partner management
+  - name: bookings
+    description: Booking management
+  - name: dashboard
+    description: Dashboard analytics
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/admin-login:
+    post:
+      operationId: adminLogin
+      tags: [auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResult"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/mechanic-login:
+    post:
+      operationId: mechanicLogin
+      tags: [auth]
+      summary: Mechanic portal login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MechanicLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MechanicAuthResult"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /subscribers:
+    get:
+      operationId: listSubscribers
+      tags: [subscribers]
+      summary: List all subscribers
+      responses:
+        "200":
+          description: List of subscribers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subscriber"
+    post:
+      operationId: createSubscriber
+      tags: [subscribers]
+      summary: Create a subscriber
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriberInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscriber"
+
+  /subscribers/{id}:
+    patch:
+      operationId: updateSubscriber
+      tags: [subscribers]
+      summary: Update a subscriber
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriberUpdate"
+      responses:
+        "200":
+          description: Updated subscriber
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscriber"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteSubscriber
+      tags: [subscribers]
+      summary: Delete a subscriber
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /mechanics:
+    get:
+      operationId: listMechanics
+      tags: [mechanics]
+      summary: List all mechanics
+      responses:
+        "200":
+          description: List of mechanics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Mechanic"
+    post:
+      operationId: createMechanic
+      tags: [mechanics]
+      summary: Create a mechanic partner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MechanicInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mechanic"
+
+  /mechanics/{id}:
+    patch:
+      operationId: updateMechanic
+      tags: [mechanics]
+      summary: Update a mechanic partner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MechanicUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mechanic"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteMechanic
+      tags: [mechanics]
+      summary: Delete a mechanic partner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      summary: List all bookings
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Create a booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+
+  /bookings/{id}:
+    patch:
+      operationId: updateBooking
+      tags: [bookings]
+      summary: Update a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteBooking
+      tags: [bookings]
+      summary: Delete a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /mechanics/{id}/stats:
+    get:
+      operationId: getMechanicStats
+      tags: [mechanics]
+      summary: Get stats for a single mechanic portal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Mechanic stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MechanicStats"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /signup:
+    post:
+      operationId: publicSignup
+      tags: [subscribers]
+      summary: Public subscriber self-signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupInput"
+      responses:
+        "201":
+          description: Signup successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscriber"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    AdminLoginInput:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+
+    MechanicLoginInput:
+      type: object
+      required: [code, password]
+      properties:
+        code:
+          type: string
+        password:
+          type: string
+
+    AuthResult:
+      type: object
+      required: [success, role]
+      properties:
+        success:
+          type: boolean
+        role:
+          type: string
+
+    MechanicAuthResult:
+      type: object
+      required: [success, mechanic]
+      properties:
+        success:
+          type: boolean
+        mechanic:
+          $ref: "#/components/schemas/Mechanic"
+
+    Subscriber:
+      type: object
+      required: [id, fname, lname, tier, consent, joinDate]
+      properties:
+        id:
+          type: integer
+        fname:
+          type: string
+        lname:
+          type: string
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        suburb:
+          type: ["string", "null"]
+        make:
+          type: ["string", "null"]
+        model:
+          type: ["string", "null"]
+        year:
+          type: ["string", "null"]
+        tier:
+          type: string
+          enum: [basic, standard, annual]
+        mechId:
+          type: ["integer", "null"]
+        nextService:
+          type: ["string", "null"]
+        consent:
+          type: string
+          enum: [yes, pending]
+        joinDate:
+          type: string
+
+    SubscriberInput:
+      type: object
+      required: [fname, lname, tier]
+      properties:
+        fname:
+          type: string
+        lname:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        suburb:
+          type: string
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: string
+        tier:
+          type: string
+          enum: [basic, standard, annual]
+        mechId:
+          type: ["integer", "null"]
+        nextService:
+          type: ["string", "null"]
+        consent:
+          type: string
+          enum: [yes, pending]
+
+    SubscriberUpdate:
+      type: object
+      properties:
+        fname:
+          type: string
+        lname:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        suburb:
+          type: string
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: string
+        tier:
+          type: string
+          enum: [basic, standard, annual]
+        mechId:
+          type: ["integer", "null"]
+        nextService:
+          type: ["string", "null"]
+        consent:
+          type: string
+          enum: [yes, pending]
+
+    Mechanic:
+      type: object
+      required: [id, name, code, discount, revShare]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        contact:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        code:
+          type: string
+        discount:
+          type: integer
+        revShare:
+          type: integer
+
+    MechanicInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        contact:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        location:
+          type: string
+        discount:
+          type: integer
+        revShare:
+          type: integer
+        password:
+          type: string
+
+    MechanicUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        contact:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        location:
+          type: string
+        discount:
+          type: integer
+        revShare:
+          type: integer
+        password:
+          type: string
+
+    Booking:
+      type: object
+      required: [id, subId, mechId, service, status]
+      properties:
+        id:
+          type: integer
+        subId:
+          type: integer
+        mechId:
+          type: integer
+        service:
+          type: string
+        date:
+          type: ["string", "null"]
+        value:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [pending, active, completed]
+
+    BookingInput:
+      type: object
+      required: [subId, mechId, service, status]
+      properties:
+        subId:
+          type: integer
+        mechId:
+          type: integer
+        service:
+          type: string
+        date:
+          type: ["string", "null"]
+        value:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [pending, active, completed]
+
+    BookingUpdate:
+      type: object
+      properties:
+        subId:
+          type: integer
+        mechId:
+          type: integer
+        service:
+          type: string
+        date:
+          type: ["string", "null"]
+        value:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [pending, active, completed]
+
+    DashboardStats:
+      type: object
+      required: [totalSubscribers, activeMechanics, totalBookings, totalRevenue, weeklyRunRate, recentSubscribers, upcomingBookings, tierBreakdown, revenueBreakdown, serviceAlerts]
+      properties:
+        totalSubscribers:
+          type: integer
+        activeMechanics:
+          type: integer
+        totalBookings:
+          type: integer
+        totalRevenue:
+          type: number
+        weeklyRunRate:
+          type: number
+        recentSubscribers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Subscriber"
+        upcomingBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Booking"
+        tierBreakdown:
+          type: object
+          properties:
+            basic:
+              type: integer
+            standard:
+              type: integer
+            annual:
+              type: integer
+          required: [basic, standard, annual]
+        revenueBreakdown:
+          type: object
+          required: [basicAnnual, standardAnnual, annualTierAnnual, grossAnnual, pitlaneNet, weeklyRunRate]
+          properties:
+            basicAnnual:
+              type: number
+            standardAnnual:
+              type: number
+            annualTierAnnual:
+              type: number
+            grossAnnual:
+              type: number
+            pitlaneNet:
+              type: number
+            weeklyRunRate:
+              type: number
+        serviceAlerts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceAlert"
+
+    ServiceAlert:
+      type: object
+      required: [subscriberId, subscriberName, tier, nextService, alertStatus, daysUntil]
+      properties:
+        subscriberId:
+          type: integer
+        subscriberName:
+          type: string
+        vehicleDescription:
+          type: string
+        tier:
+          type: string
+        nextService:
+          type: string
+        alertStatus:
+          type: string
+          enum: [overdue, upcoming]
+        daysUntil:
+          type: integer
+        workshopName:
+          type: string
+
+    MechanicStats:
+      type: object
+      required: [totalSubscribers, totalBookings, revenueEarned, upcomingBookings, subscribers]
+      properties:
+        totalSubscribers:
+          type: integer
+        totalBookings:
+          type: integer
+        revenueEarned:
+          type: number
+        upcomingBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Booking"
+        subscribers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Subscriber"
+
+    SignupInput:
+      type: object
+      required: [fname, lname, tier]
+      properties:
+        fname:
+          type: string
+        lname:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        suburb:
+          type: string
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: string
+        tier:
+          type: string
+          enum: [basic, standard, annual]

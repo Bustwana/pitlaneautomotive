@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Pitlane Automotive Group"
+version = "1.0.0"
+id = "artifacts/pitlane"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24194
+
+[services.development]
+run = "pnpm --filter @workspace/pitlane run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pitlane", "run", "build" ]
+publicDir = "artifacts/pitlane/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24194"
+BASE_PATH = "/"
